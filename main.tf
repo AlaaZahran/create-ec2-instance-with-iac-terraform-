@@ -1,6 +1,7 @@
 resource "aws_instance" "my-ec2"{
     ami="ami-065793e81b1869261"
     instance_type="t2.micro"
+    security_groups =[aws_security_group.allow_ssh.name]
      tags = {
     Name = "HelloWorld"
   }
@@ -18,21 +19,30 @@ output "eip_value" {
     value= aws_instance.my-ec2.public_ip
 
 }
-output "private_value" {
-    description = "VMs private IP"
-    value= aws_instance.my-ec2.private_ip
+resource "aws_security_group" "allow_ssh" {
+  name        = "allow_ssh"
+  description = "Allow Shh inbound traffic"
 
-}
-output "ec2_name" {
-    description = "VMs Name"
-    value= aws_instance.my-ec2.tags.Name
 
-}
+  ingress {
+    description      = "Shh from VPC"
+    from_port        = 22
+    to_port          = 22
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
 
-output "ec2_id" {
-    description = "VMs Name"
-    value= aws_instance.my-ec2.id
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
 
+  tags = {
+    Name = "allow_ssh"
+  }
 }
 
 
