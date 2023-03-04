@@ -28,6 +28,11 @@ output "ec2_name" {
     value= aws_instance.my-ec2.tags.Name
 
 }
+output "ec2_name" {
+    description = "VMs Name"
+    value= aws_instance.my-ec2.tags.Name
+
+}
 
 output "ec2_id" {
     description = "VMs Name"
